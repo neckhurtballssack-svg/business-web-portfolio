@@ -1,24 +1,12 @@
-document.querySelector('#contact-form')?.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const button = form.querySelector('button');
-  const original = button.textContent;
-  button.disabled = true;
-  button.textContent = 'Odesílám…';
-  try {
-    const response = await fetch(form.action, {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: new FormData(form)
-    });
-    if (!response.ok) throw new Error('Odeslání selhalo');
-    form.reset();
-    alert('Děkujeme! Poptávka byla odeslána. Ozveme se vám co nejdříve.');
-  } catch {
-    alert('Poptávku se nepodařilo odeslat. Zkuste to prosím znovu.');
-  } finally {
-    button.disabled = false;
-    button.textContent = original;
+const contactForm = document.querySelector('#contact-form');
+
+// Formspree handles the contact form directly. Keeping the submission native
+// avoids client-side CORS issues and ensures the request reaches the form endpoint.
+contactForm?.addEventListener('submit', () => {
+  const button = contactForm.querySelector('button');
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'Odesílám…';
   }
 });
 
