@@ -1,13 +1,28 @@
 const contactForm = document.querySelector('#contact-form');
 
-// Formspree handles the contact form directly. Keeping the submission native
-// avoids client-side CORS issues and ensures the request reaches the form endpoint.
+// Formspree handles the contact form directly.
 contactForm?.addEventListener('submit', () => {
   const button = contactForm.querySelector('button');
   if (button) {
     button.disabled = true;
     button.textContent = 'Odesílám…';
   }
+});
+
+// Guide visitors from the hero CTA to the contact form with a small visual cue.
+document.querySelector('a[href="#kontakt"].primary')?.addEventListener('click', (event) => {
+  const target = document.querySelector('#kontakt');
+  if (!target) return;
+  event.preventDefault();
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const firstField = target.querySelector('input');
+  const formButton = target.querySelector('button');
+  target.classList.remove('contact-focus');
+  void target.offsetWidth;
+  target.classList.add('contact-focus');
+  setTimeout(() => firstField?.focus({ preventScroll: true }), 850);
+  setTimeout(() => formButton?.classList.add('attention'), 650);
+  setTimeout(() => formButton?.classList.remove('attention'), 2400);
 });
 
 document.querySelector('.menu')?.addEventListener('click', () => {
