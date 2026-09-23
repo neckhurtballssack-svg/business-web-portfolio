@@ -6,17 +6,15 @@ document.querySelector('#contact-form')?.addEventListener('submit', async (event
   button.disabled = true;
   button.textContent = 'Odesílám…';
   try {
-    const data = Object.fromEntries(new FormData(form).entries());
-    const response = await fetch('/api/contact', {
+    const response = await fetch(form.action, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      headers: { Accept: 'application/json' },
+      body: new FormData(form)
     });
-    const result = await response.json();
-    if (!response.ok || !result.ok) throw new Error(result.error || 'Chyba');
+    if (!response.ok) throw new Error('Odeslání selhalo');
     form.reset();
     alert('Děkujeme! Poptávka byla odeslána. Ozveme se vám co nejdříve.');
-  } catch (error) {
+  } catch {
     alert('Poptávku se nepodařilo odeslat. Zkuste to prosím znovu.');
   } finally {
     button.disabled = false;
