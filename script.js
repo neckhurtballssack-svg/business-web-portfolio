@@ -1,6 +1,27 @@
-document.querySelector('#contact-form')?.addEventListener('submit', (event) => {
+document.querySelector('#contact-form')?.addEventListener('submit', async (event) => {
   event.preventDefault();
-  alert('Děkujeme! Toto je ukázkový formulář.');
+  const form = event.currentTarget;
+  const button = form.querySelector('button');
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Odesílám…';
+  try {
+    const data = Object.fromEntries(new FormData(form).entries());
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    if (!response.ok || !result.ok) throw new Error(result.error || 'Chyba');
+    form.reset();
+    alert('Děkujeme! Poptávka byla odeslána. Ozveme se vám co nejdříve.');
+  } catch (error) {
+    alert('Poptávku se nepodařilo odeslat. Zkuste to prosím znovu.');
+  } finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
 });
 
 document.querySelector('.menu')?.addEventListener('click', () => {
